@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr 23 19:15:32 2024
+
+@author: Chi, Mia
+"""
+
+# csc110-final-project
 import turtle
 import time
 import random
