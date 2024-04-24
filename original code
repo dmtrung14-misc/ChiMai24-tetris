@@ -83,6 +83,12 @@ class Shape():
                 self.erase_shape(grid)
                 self.x += 1
     
+    def move_down(self, grid):
+        if self.y + self.height < 24:
+            if self.can_move:
+                self.erase_shape(grid)
+                self.y += 1
+
     def draw_shape(self, grid):
         for y in range(self.height):
             for x in range(self.width):
@@ -195,8 +201,8 @@ def check_grid(grid):
 def draw_score(pen, score):
     pen.color("black")
     pen.hideturtle()
-    pen.goto(-185, 200)
-    pen.write("Score: {}".format(score), move=False, align="left", font=("Arial", 24, "normal"))
+    pen.goto(-200, 200)
+    pen.write("Score: {}".format(score), move=False, align="left", font=("Courier New", 24, "bold"))
     
 
 # Create the basic shape for the start of the game
@@ -213,6 +219,7 @@ if shape.can_move(grid):
     wn.listen()
     wn.onkeypress(lambda: shape.move_left(grid), "a")
     wn.onkeypress(lambda: shape.move_right(grid), "d")
+    wn.onkeypress(lambda: shape.move_down(grid), "s")
     
 
 # wn.listen()
