@@ -1,4 +1,4 @@
-from turtle import *
+import turtle 
 import time
 import random
 
@@ -70,9 +70,19 @@ def draw_score(pen, score):
 def main():
     wn = turtle.Screen()
     wn.title("Tetris")
-    wn.bgcolor("steellightblue")
+    wn.bgcolor("white")
     wn.setup(width=560, height=540)
     wn.tracer(0)
+
+    # Create the drawing pen
+    pen = turtle.Turtle()
+    pen.penup()
+    pen.speed(0)
+    pen.shape("square")
+    pen.setundobuffer(None)
+
+    #set the delay time
+    delay = 0.2
 
     grid = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -101,12 +111,6 @@ def main():
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
 
-    delay = 0.2
-
-
-    x = 4
-    y = 0
-
     
     # Block Shape
     square = [[1,1],
@@ -120,10 +124,10 @@ def main():
                     [1]]
 
     left_l = [[1,0,0],
-            [1,1,1]]
+              [1,1,1]]
             
     right_l = [[0,0,1],
-            [1,1,1]]
+               [1,1,1]]
             
     z = [[1,1,0],
         [0,1,1]]
@@ -136,12 +140,14 @@ def main():
 
     shapes = [square, horizontal_line, vertical_line, left_l, right_l, z, s, t]
     
-    # Choose a random shape each time
+    # Choose a random shape at the start
     shape = random.choice(shapes)
-    
     height = len(shape)
     width = len(shape[0])
+    x = 4
+    y = 0
     
+    # assign color
     if shape == square:
         color = 1
     elif shape == horizontal_line or shape == vertical_line:
@@ -152,14 +158,6 @@ def main():
         color = 4
     elif shape == t:
         color = 5
-    
-
-    # Create the drawing pen
-    pen = turtle.Turtle()
-    pen.penup()
-    pen.speed(0)
-    pen.shape("square")
-    pen.setundobuffer(None)
 
 
     # Put the shape in the grid
@@ -169,16 +167,9 @@ def main():
     # draw_grid(pen, grid)
 
     wn.onkeypress(lambda: shape.rotate(grid), "space")
-    if shape.can_move(grid):
-        wn.listen()
-        wn.onkeypress(lambda: shape.move_left(grid), "Left")
-        wn.onkeypress(lambda: shape.move_right(grid), "Right")
-        
-
-    # wn.listen()
-    # wn.onkeypress(lambda: shape.move_left(grid), "a")
-    # wn.onkeypress(lambda: shape.move_right(grid), "d")
-    # wn.onkeypress(lambda: shape.rotate(grid), "space")
+    wn.listen()
+    wn.onkeypress(lambda: shape.move_left(grid), "Left")
+    wn.onkeypress(lambda: shape.move_right(grid), "Right")
 
     # Set the score to 0
     score = 0
@@ -188,32 +179,38 @@ def main():
     # Main game loop
     while True:
         wn.update()
+        draw_grid(pen, grid)
+        draw_score(pen, score)
+        
 
         # Move the shape
         # Open Row
         # Check for the bottom
-        if y == 23 - height + 1:
-            shape = random.choice(shapes)
-            check_grid(grid)
-        # Check for collision with next row
-        elif can_move(grid, height, width, shape):
-            # Erase the current shape
-            erase_shape(grid, height, width, shape)
+        # if y == 23 - height + 1:
+        #     shape = random.choice(shapes)
+        #     check_grid(grid)
+        # # Check for collision with next row
+        # elif can_move(x,y,grid, height, width, shape):
+        #     # Erase the current shape
+        #     erase_shape(x,y,grid, height, width, shape)
             
-            # Move the shape by 1
-            y +=1
+        #     # Move the shape by 1
+        #     y +=1
             
-            # Draw the shape again
-            draw_shape(grid, height, width, shape, color)
+        #     # Draw the shape again
+        #     draw_shape(grid, height, width, shape, color)
 
-        else:
-            shape = random.choice(shapes)
-            check_grid(grid, pen)
+        # else:
+        #     shape = random.choice(shapes)
+        #     check_grid(grid, pen)
             
         # Draw the screen
-        draw_grid(pen, grid)
-        draw_score(pen, score)
+        
         
         time.sleep(delay)
         
     wn.mainloop()
+
+if __name__ == "__main__": 
+    main()
+

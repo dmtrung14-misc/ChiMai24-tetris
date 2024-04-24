@@ -85,7 +85,7 @@ class Shape():
     
     def move_down(self, grid):
         if self.y + self.height < 24:
-            if self.can_move:
+            if self.can_move(grid):
                 self.erase_shape(grid)
                 self.y += 1
 
