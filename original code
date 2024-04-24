@@ -11,7 +11,7 @@ import time
 import random
 
 wn = turtle.Screen()
-wn.title("TETRIS by @TokyoEdTech")
+wn.title("TETRIS Game")
 wn.bgcolor("NavajoWhite2")
 wn.setup(width=560, height=540)
 wn.tracer(0)
@@ -68,11 +68,6 @@ class Shape():
         self.height = len(self.shape)
         self.width = len(self.shape[0])
 
-    def new_method(self):
-        square = [[1,1],
-                  [1,1]]
-                  
-        return square
         
         # print(self.height, self.width)
 
