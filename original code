@@ -22,7 +22,6 @@ class Shape():
     def __init__(self):
         self.x = 5
         self.y = 0
-        self.color = random.randint(1, 7)
         
         # Block Shape
         square = [[1,1],
@@ -35,11 +34,11 @@ class Shape():
                          [1],
                          [1]]
 
-        left_l = [[1,0,0,0],
-                  [1,1,1,1]]
+        left_l = [[1,0,0],
+                  [1,1,1]]
                    
-        right_l = [[0,0,0,1],
-                   [1,1,1,1]]
+        right_l = [[0,0,1],
+                   [1,1,1]]
                    
         left_s = [[1,1,0],
                   [0,1,1]]
@@ -54,10 +53,26 @@ class Shape():
 
         # Choose a random shape each time
         self.shape = random.choice(shapes)
+        if self.shape == square:
+            self.color = 1
+        elif self.shape == horizontal_line or self.shape == vertical_line:
+            self.color = 2
+        elif self.shape == left_l or self.shape == right_l:
+            self.color = 3
+        elif self.shape == left_s or self.shape == right_s:
+            self.color = 4
+        elif self.shape == t:
+            self.color = 5
 
                       
         self.height = len(self.shape)
         self.width = len(self.shape[0])
+
+    def new_method(self):
+        square = [[1,1],
+                  [1,1]]
+                  
+        return square
         
         # print(self.height, self.width)
 
@@ -182,7 +197,7 @@ def check_grid(grid):
                     grid[copy_y][copy_x] = grid[copy_y-1][copy_x]
 
 def draw_score(pen, score):
-    pen.color("blue")
+    pen.color("black")
     pen.hideturtle()
     pen.goto(-75, 350)
     pen.write("Score: {}".format(score), move=False, align="left", font=("Arial", 24, "normal"))
