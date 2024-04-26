@@ -2,6 +2,7 @@ import turtle
 import time
 import random
 
+#draw the grid
 def draw_grid(pen, grid):
     pen.clear()
     top = 230
@@ -21,16 +22,16 @@ def draw_grid(pen, grid):
 
 
 def draw_shape(x, y, grid, height, width, shape, color):
-    for y in range(height):
-        for x in range(width):
-            if(shape[y][x]==1):
-                grid[y + y][x + x] = color
-
-def erase_shape(x, y, grid, height, width, shape):
     for i in range(height):
         for j in range(width):
-            if(shape[y][x]==1):
-                grid[y + i][x + j] = 0
+            if(shape[i][j]==1):
+                grid[y + i][x + j] = color
+
+def erase_shape(x,y,grid, height, width, shape):
+    for i in range(height):
+        for j in range(width):
+            if(shape[i][j]==1):
+                grid[y+i][x+j] = 0
 
 def can_move(x, y, grid, height, width, shape):
     result = True
@@ -42,6 +43,40 @@ def can_move(x, y, grid, height, width, shape):
 
     return result
     
+def move_left(x,y, grid,height,width,shape):                 
+    if x > 0:
+        if grid[y][x - 1] == 0:
+            erase_shape(x,y,grid, height, width, shape)
+            x -= 1
+        
+def move_right(x,y,grid,height,width,shape):
+    if x < 12 - width:
+        if grid[y][x + width] == 0:
+            erase_shape(x,y,grid,height, width, shape)
+            x += 1
+    
+def move_down(x,y,grid,height,width,shape):
+    if y + height < 24:
+        if can_move(x, y, grid, height, width, shape):
+            erase_shape(x,y,grid, height, width, shape)
+            y += 1
+
+def rotate(x,grid,height,width,shape):
+        # First erase_shape
+        erase_shape(x,y,grid, height, width, shape)
+        rotated_shape = []
+        for i in range(len(shape[0])):
+            new_row = []
+            for j in range(len(shape)-1, -1, -1):
+                new_row.append(shape[j][i])
+            rotated_shape.append(new_row)
+        
+        right_side = x + len(rotated_shape[0])
+        if right_side < len(grid[0]):     
+            shape = rotated_shape
+            # Update the height and width
+            height = len(shape)
+            width = len(shape[0])
 
 def check_grid(grid, pen):
     # Check if each row is full
@@ -164,12 +199,13 @@ def main():
     grid[y][x] = color
 
     # Draw the initial grid
-    # draw_grid(pen, grid)
+    draw_grid(pen, grid)
 
-    wn.onkeypress(lambda: shape.rotate(grid), "space")
     wn.listen()
-    wn.onkeypress(lambda: shape.move_left(grid), "Left")
-    wn.onkeypress(lambda: shape.move_right(grid), "Right")
+    wn.onkeypress(lambda: rotate(x,grid,height,width,shape), "space")
+    wn.onkeypress(lambda: move_left(x,y, grid,height,width,shape), "Left")
+    wn.onkeypress(lambda: move_right(x,y, grid,height,width,shape), "Right")
+    wn.onkeypress(lambda: move_down(x,y, grid,height,width,shape), "Down")
 
     # Set the score to 0
     score = 0
@@ -182,27 +218,26 @@ def main():
         draw_grid(pen, grid)
         draw_score(pen, score)
         
-
         # Move the shape
         # Open Row
         # Check for the bottom
-        # if y == 23 - height + 1:
-        #     shape = random.choice(shapes)
-        #     check_grid(grid)
-        # # Check for collision with next row
-        # elif can_move(x,y,grid, height, width, shape):
-        #     # Erase the current shape
-        #     erase_shape(x,y,grid, height, width, shape)
+        if y == 23 - height + 1:
+            shape = random.choice(shapes)
+            check_grid(grid,pen)
+        # Check for collision with next row
+        elif can_move(x,y,grid, height, width, shape):
+            # Erase the current shape
+            erase_shape(x,y,grid, height, width, shape)
             
-        #     # Move the shape by 1
-        #     y +=1
+            # Move the shape by 1
+            y += 1
             
-        #     # Draw the shape again
-        #     draw_shape(grid, height, width, shape, color)
+            # Draw the shape again
+            draw_shape(x,y,grid, height, width, shape, color)
 
-        # else:
-        #     shape = random.choice(shapes)
-        #     check_grid(grid, pen)
+        else:
+            shape = random.choice(shapes)
+            check_grid(grid, pen)
             
         # Draw the screen
         
