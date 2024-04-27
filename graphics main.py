@@ -85,10 +85,10 @@ def draw_score(score):
 def freeze_shape(shape,grid,center):
     for i in shape:
         grid.append(i)
-    for j in grid:
-        j.undraw()
-        j.draw(win)
-        x_y = j.getCenter()
+        i.undraw()
+    for j in range(len(grid) -1, len(grid)-5, -1):
+        grid[j].draw(win)
+        x_y = grid[j].getCenter()
         center.append([x_y.getX(),x_y.getY()])
 
 
@@ -183,6 +183,8 @@ def main():
                 move_right(shape,center)
             elif keystrings == "Down":
                 move_down(shape,center) 
+            for i in shape:
+                i.move(0,-30)
         else:
             freeze_shape(shape,grid,center)
             shape = random.choice(shapes)
