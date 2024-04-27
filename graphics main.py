@@ -48,8 +48,7 @@ def can_move_down(shape):
     if min(pointY) <= 20:
         result = False
     return result
-        
-
+    
 
 def draw_score(score):
     draw_score = graphics.Text(graphics.Point(180,650), "Score: {}".format(score))
@@ -119,7 +118,6 @@ def main():
     
     shapes = [square,line,right_l,left_l,r,l,t]
     shape = random.choice(shapes)
-
     for i in shape:
         if shape == square:
             i.setFill("yellow2")
@@ -137,24 +135,19 @@ def main():
 
     score = 0
     draw_score(score)
-
     
     delay = 0.3
     
 
-    while True:
-        keystrings = win.checkKey()  
-        if keystrings == "Left":
-            move_left(shape)
-        elif keystrings == "Right":
-            move_right(shape)
-        elif keystrings == "Down":
-            move_down(shape)     
-            
-              
+    while True:   
         if can_move_down(shape):
-            for i in shape:
-                i.move(0,-30)
+            keystrings = win.checkKey()  
+            if keystrings == "Left":
+                move_left(shape)
+            elif keystrings == "Right":
+                move_right(shape)
+            elif keystrings == "Down":
+                move_down(shape) 
         else:
             shape = random.choice(shapes)
             for i in shape:
@@ -168,9 +161,22 @@ def main():
                     i.setFill("blue2")
                 elif shape == t:
                     i.setFill("green2")
-                    i.setOutline("black")
-                    i.draw(win)
-
+                i.setOutline("black")
+                i.draw(win)
+        # if can_move_down(shape):
+        #     for i in shape:
+        #         i.move(0,-30)
+        #         keystrings = win.checkKey()  
+        #         if keystrings == "Left":
+        #             move_left(shape)
+        #         elif keystrings == "Right":
+        #             move_right(shape)
+        #         elif keystrings == "Down":
+        #             move_down(shape)  
+        # else:
+        #     shape = random.choice(shapes)
+        #     for i in shape:
+        #         i.draw(win)
         time.sleep(delay)
         
         
