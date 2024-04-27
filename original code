@@ -16,7 +16,7 @@ wn.bgcolor("NavajoWhite2")
 wn.setup(width=560, height=540)
 wn.tracer(0)
 
-delay = 0.1
+delay = 0.3
 
 class Shape():
     def __init__(self):

@@ -4,22 +4,22 @@ import time
 
 win = graphics.GraphWin("My Window",700,700)
 
-def move_left(shape):
-    if can_move_left(shape):
+def move_left(shape,center):
+    if can_move_left(shape,center):
         for i in shape:
             i.move(-30,0)
 
-def move_right(shape):
-    if can_move_right(shape):
+def move_right(shape,center):
+    if can_move_right(shape,center):
         for i in shape:
             i.move(30,0)
 
-def move_down(shape):
-    if can_move_down(shape):
+def move_down(shape,center):
+    if can_move_down(shape,center):
         for i in shape:
             i.move(0,-30)
 
-def can_move_left(shape):
+def can_move_left(shape,center):
     result = True
     pointX1 = []
     for i in shape:
@@ -27,9 +27,17 @@ def can_move_left(shape):
         pointX1.append(X1)
     if min(pointX1) <= 350:
         result = False
+    center_shape = []
+    for i in shape:
+        y = i.getCenter()
+        center_shape.append([y.getX() -30 ,y.getY()])
+    for j in range(len(center_shape)):
+        if center_shape[j] in center:
+            result = False
+            break
     return result
 
-def can_move_right(shape):
+def can_move_right(shape,center):
     result = True
     pointX2 = []
     for i in shape:
@@ -37,9 +45,17 @@ def can_move_right(shape):
         pointX2.append(X2)
     if max(pointX2) >= 680:
         result = False
+    center_shape = []
+    for i in shape:
+        y = i.getCenter()
+        center_shape.append([y.getX() + 30 ,y.getY()])
+    for j in range(len(center_shape)):
+        if center_shape[j] in center:
+            result = False
+            break
     return result
 
-def can_move_down(shape):
+def can_move_down(shape,center):
     result = True
     pointY = []
     for i in shape:
@@ -47,6 +63,14 @@ def can_move_down(shape):
         pointY.append(Y)
     if min(pointY) <= 20:
         result = False
+    center_shape = []
+    for i in shape:
+        y = i.getCenter()
+        center_shape.append([y.getX(),y.getY() - 30])
+    for j in range(len(center_shape)):
+        if center_shape[j] in center:
+            result = False
+            break
     return result
     
 
@@ -57,6 +81,16 @@ def draw_score(score):
     draw_score.setTextColor("black")
     draw_score.setStyle("bold")
     draw_score.draw(win)
+
+def freeze_shape(shape,grid,center):
+    for i in shape:
+        grid.append(i)
+    for j in grid:
+        j.undraw()
+        j.draw(win)
+        x_y = j.getCenter()
+        center.append([x_y.getX(),x_y.getY()])
+
 
 def main():
     
@@ -137,18 +171,20 @@ def main():
     draw_score(score)
     
     delay = 0.3
-    
+    grid = []
+    center = []
 
     while True:   
-        if can_move_down(shape):
+        if can_move_down(shape,center):
             keystrings = win.checkKey()  
             if keystrings == "Left":
-                move_left(shape)
+                move_left(shape,center)
             elif keystrings == "Right":
-                move_right(shape)
+                move_right(shape,center)
             elif keystrings == "Down":
-                move_down(shape) 
+                move_down(shape,center) 
         else:
+            freeze_shape(shape,grid,center)
             shape = random.choice(shapes)
             for i in shape:
                 if shape == square:
@@ -162,6 +198,7 @@ def main():
                 elif shape == t:
                     i.setFill("green2")
                 i.setOutline("black")
+                i.undraw()
                 i.draw(win)
         # if can_move_down(shape):
         #     for i in shape:
