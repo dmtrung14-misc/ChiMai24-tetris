@@ -189,21 +189,19 @@ def main():
         else:
             freeze_shape(shape,grid,center)
             shape = random.choice(shapes)
-            for i in shape:
-                i.draw(win)
-            # for j in shape:
-            #     if shape == square:
-            #         j.setFill("yellow2")
-            #     elif shape == line:
-            #         j.setFill("red2")
-            #     elif shape == left_l or shape == right_l:
-            #         j.setFill("orange2")
-            #     elif shape == r or shape == l:
-            #         j.setFill("blue2")
-            #     elif shape == t:
-            #         j.setFill("green2")
-            #     j.setOutline("black")
-            #     j.draw(win)
+            for j in shape:
+                if shape == square:
+                    j.setFill("yellow2")
+                elif shape == line:
+                    j.setFill("red2")
+                elif shape == left_l or shape == right_l:
+                    j.setFill("orange2")
+                elif shape == r or shape == l:
+                    j.setFill("blue2")
+                elif shape == t:
+                    j.setFill("green2")
+                j.setOutline("black")
+                j.draw(win)
         time.sleep(delay)
         
         
