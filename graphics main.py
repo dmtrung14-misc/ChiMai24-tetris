@@ -92,6 +92,43 @@ def freeze_shape(shape,grid,center):
         x_y = grid[j].getCenter()
         center.append([x_y.getX(),x_y.getY()])
 
+def draw_shape(x,y):
+    square = [[x,x+30,x,x+30],
+              [y,y,y-30,y-30]]
+    line = [[x-30,x,x+30,x+60],
+            [y,y,y,y]]
+    right_l = [[x+30,x-30,x,x+30],
+               [y,y-30,y-30,y-30]]
+    left_l = [[x-30,x-30,x,x+30],
+               [y,y-30,y-30,y-30]]
+    r = [[x,x+30,x-30,x],
+         [y,y,y-30,y-30]]
+    l = [[x-30,x,x,x+30],
+         [y,y,y-30,y-30]]
+    t = [[x,x-30,x,x+30],
+         [y,y-30,y-30,y-30]]
+    
+    shapes = [square,line,right_l,left_l,r,l,t]
+    random_shape = random.choice(shapes)
+    if random_shape == square:
+        color = "yellow2"
+    elif random_shape == line:
+        color = "red2"
+    elif random_shape == left_l or random_shape == right_l:
+        color = "orange2"
+    elif random_shape == r or random_shape == l:
+        color = "blue2"
+    elif random_shape == t:
+        color = "green2"
+    shape = []
+    for i in range(4):
+        pnt1 = graphics.Point(random_shape[0][i],random_shape[1][i])
+        pnt2 = graphics.Point(random_shape[0][i] + 30,random_shape[1][i] + 30)
+        block = graphics.Rectangle(pnt1,pnt2)
+        shape.append(block)
+    return shape, color
+
+
 
 def main():
     
@@ -116,57 +153,63 @@ def main():
     # piece.setOutline("black")
 
     #draw the shapes
-    square = [graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
-              graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680)),
-              graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-              graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650))]
+    # square = [graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
+    #           graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680)),
+    #           graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
+    #           graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650))]
     
-    line = [graphics.Rectangle(graphics.Point(470,650),graphics.Point(500,680)),
-            graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
-            graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680)),
-            graphics.Rectangle(graphics.Point(560,650),graphics.Point(590,680))]
+    # line = [graphics.Rectangle(graphics.Point(470,650),graphics.Point(500,680)),
+    #         graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
+    #         graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680)),
+    #         graphics.Rectangle(graphics.Point(560,650),graphics.Point(590,680))]
     
-    right_l = [graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650)),
-            graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-            graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
-            graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680))]
+    # right_l = [graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650)),
+    #         graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
+    #         graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
+    #         graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680))]
     
-    left_l = [graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650)),
-            graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-            graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
-            graphics.Rectangle(graphics.Point(470,650),graphics.Point(500,680))]
+    # left_l = [graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650)),
+    #         graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
+    #         graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
+    #         graphics.Rectangle(graphics.Point(470,650),graphics.Point(500,680))]
     
-    r = [graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
-        graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-        graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
-        graphics.Rectangle(graphics.Point(470,650),graphics.Point(500,680))]
+    # r = [graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
+    #     graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
+    #     graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
+    #     graphics.Rectangle(graphics.Point(470,650),graphics.Point(500,680))]
     
-    l = [graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
-        graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-        graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680)),
-        graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650))]
+    # l = [graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
+    #     graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
+    #     graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680)),
+    #     graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650))]
     
-    t = [graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650)),
-        graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-        graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
-        graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680))]
+    # t = [graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650)),
+    #     graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
+    #     graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
+    #     graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680))]
     
-    shapes = [square,line,right_l,left_l,r,l,t]
-    shape = random.choice(shapes)
-    for j in shape:
-        if shape == square:
-            j.setFill("yellow2")
-        elif shape == line:
-            j.setFill("red2")
-        elif shape == left_l or shape == right_l:
-            j.setFill("orange2")
-        elif shape == r or shape == l:
-            j.setFill("blue2")
-        elif shape == t:
-            j.setFill("green2")
-        j.setOutline("black")
-        j.draw(win)
-    
+    # shapes = [square,line,right_l,left_l,r,l,t]
+    # shape = random.choice(shapes)
+    # for j in shape:
+    #     if shape == square:
+    #         j.setFill("yellow2")
+    #     elif shape == line:
+    #         j.setFill("red2")
+    #     elif shape == left_l or shape == right_l:
+    #         j.setFill("orange2")
+    #     elif shape == r or shape == l:
+    #         j.setFill("blue2")
+    #     elif shape == t:
+    #         j.setFill("green2")
+    #     j.setOutline("black")
+    #     j.draw(win)
+    x = 500
+    y = 650
+    shape, color = draw_shape(x,y)
+    for i in shape:
+        i.setFill(color)
+        i.setOutline("black")
+        i.draw(win)
 
     score = 0
     draw_score(score)
@@ -188,20 +231,25 @@ def main():
                 i.move(0,-30)
         else:
             freeze_shape(shape,grid,center)
-            shape = random.choice(shapes)
-            for j in shape:
-                if shape == square:
-                    j.setFill("yellow2")
-                elif shape == line:
-                    j.setFill("red2")
-                elif shape == left_l or shape == right_l:
-                    j.setFill("orange2")
-                elif shape == r or shape == l:
-                    j.setFill("blue2")
-                elif shape == t:
-                    j.setFill("green2")
-                j.setOutline("black")
-                j.draw(win)
+            shape, color = draw_shape(x,y)
+            for i in shape:
+                i.setFill(color)
+                i.setOutline("black")
+                i.draw(win)
+            # shape = random.choice(shapes)
+            # for j in shape:
+            #     if shape == square:
+            #         j.setFill("yellow2")
+            #     elif shape == line:
+            #         j.setFill("red2")
+            #     elif shape == left_l or shape == right_l:
+            #         j.setFill("orange2")
+            #     elif shape == r or shape == l:
+            #         j.setFill("blue2")
+            #     elif shape == t:
+            #         j.setFill("green2")
+            #     j.setOutline("black")
+            #     j.draw(win)
         time.sleep(delay)
         
         
