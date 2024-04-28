@@ -84,7 +84,8 @@ def draw_score(score):
 
 def freeze_shape(shape,grid,center):
     for i in shape:
-        grid.append(i)
+        j = i.clone()
+        grid.append(j)
         i.undraw()
     for j in range(len(grid) -1, len(grid)-5, -1):
         grid[j].draw(win)
@@ -154,17 +155,17 @@ def main():
     shape = random.choice(shapes)
     for i in shape:
         if shape == square:
-            i.setFill("yellow2")
+            j.setFill("yellow2")
         elif shape == line:
-            i.setFill("red2")
+            j.setFill("red2")
         elif shape == left_l or shape == right_l:
-            i.setFill("orange2")
+            j.setFill("orange2")
         elif shape == r or shape == l:
-            i.setFill("blue2")
+            j.setFill("blue2")
         elif shape == t:
-            i.setFill("green2")
-        i.setOutline("black")
-        i.draw(win)
+            j.setFill("green2")
+        j.setOutline("black")
+        j.draw(win)
     
 
     score = 0
@@ -187,35 +188,23 @@ def main():
                 i.move(0,-30)
         else:
             freeze_shape(shape,grid,center)
-            shape = random.choice(shapes)
-            for i in shape:
+            shape = draw_shape()
+            # shape = random.choice(shapes)
+            # for i in shape:
+            #     i.draw(win)
+            for j in shape:
                 if shape == square:
-                    i.setFill("yellow2")
+                    j.setFill("yellow2")
                 elif shape == line:
-                    i.setFill("red2")
+                    j.setFill("red2")
                 elif shape == left_l or shape == right_l:
-                    i.setFill("orange2")
+                    j.setFill("orange2")
                 elif shape == r or shape == l:
-                    i.setFill("blue2")
+                    j.setFill("blue2")
                 elif shape == t:
-                    i.setFill("green2")
-                i.setOutline("black")
-                i.undraw()
-                i.draw(win)
-        # if can_move_down(shape):
-        #     for i in shape:
-        #         i.move(0,-30)
-        #         keystrings = win.checkKey()  
-        #         if keystrings == "Left":
-        #             move_left(shape)
-        #         elif keystrings == "Right":
-        #             move_right(shape)
-        #         elif keystrings == "Down":
-        #             move_down(shape)  
-        # else:
-        #     shape = random.choice(shapes)
-        #     for i in shape:
-        #         i.draw(win)
+                    j.setFill("green2")
+                j.setOutline("black")
+                j.draw(win)
         time.sleep(delay)
         
         
