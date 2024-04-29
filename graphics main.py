@@ -214,6 +214,10 @@ def choose_shape(x,y):
         pnt2 = graphics.Point(random_shape[0][i] + 30,random_shape[1][i] + 30)
         block = graphics.Rectangle(pnt1,pnt2)
         shape.append(block)
+    for i in shape:
+        i.setFill(color)
+        i.setOutline("ivory")
+        i.draw(win)
     return shape, color
 
 def draw_shape(predicted_shape):
@@ -278,10 +282,6 @@ def main():
     rec1.draw(win)
     
     predicted_shape, predicted_color = choose_shape(150,140)
-    for i in predicted_shape:
-        i.setFill(predicted_color)
-        i.setOutline("ivory")
-        i.draw(win)
 
     score = 0
     draw_score(score)
@@ -293,10 +293,6 @@ def main():
     shape = draw_shape(predicted_shape) 
     color = predicted_color
     predicted_shape, predicted_color = choose_shape(150,140)
-    for i in predicted_shape:
-        i.setFill(predicted_color)
-        i.setOutline("ivory")
-        i.draw(win)
     while True:  
         if can_move_down(shape,center):
             for i in shape:
@@ -325,10 +321,6 @@ def main():
             shape = draw_shape(predicted_shape) 
             color = predicted_color
             predicted_shape, predicted_color = choose_shape(150,140)
-            for i in predicted_shape:
-                i.setFill(predicted_color)
-                i.setOutline("ivory")
-                i.draw(win)
         draw_score(score)
         time.sleep(delay)
         
@@ -337,6 +329,7 @@ def main():
     rec2 = graphics.Rectangle(pnt_1, pnt_2)
     rec2.setFill("black")
     rec2.draw(win)
+
     win.getMouse()
         
 if __name__ == "__main__":
