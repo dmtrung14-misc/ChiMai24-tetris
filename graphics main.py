@@ -156,6 +156,7 @@ def draw_score(score):
     draw_score.setTextColor(graphics.color_rgb(210, 100, 110))
     draw_score.setStyle("bold")
     draw_score.draw(win)
+    return draw_score
 
 def draw_next_shape():
     draw_score = graphics.Text(graphics.Point(180,210), "Next Shape")
@@ -246,6 +247,7 @@ def check_full_rows(grid):
         for block in grid:
             if block.getP1().getY() > row:
                 block.move(0, -30)
+    return full_rows
 
 def check_full_screen(shape):
     result = False
@@ -257,6 +259,11 @@ def check_full_screen(shape):
         result = True
     return result
 
+def update_score(score_text, old_score, full_rows):
+    new_score = old_score + len(full_rows) * 100
+    score_text.undraw()  # Remove previous score
+    score_text = draw_score(new_score)  # Draw updated score
+    return score_text, new_score
 
 def main():
     
@@ -284,7 +291,7 @@ def main():
     predicted_shape, predicted_color = choose_shape(150,140)
 
     score = 0
-    draw_score(score)
+    score_text = draw_score(score)
     draw_next_shape()
     
     delay = 0.3
@@ -316,18 +323,18 @@ def main():
             if check_full_screen(shape):
                 break
             freeze_shape(shape,grid)
-            check_full_rows(grid)
+            full_rows = check_full_rows(grid)
+            score_text, score = update_score(score_text, score, full_rows)
             center = get_center(grid)
             shape = draw_shape(predicted_shape) 
             color = predicted_color
             predicted_shape, predicted_color = choose_shape(150,140)
-        draw_score(score)
         time.sleep(delay)
         
     pnt_1 = graphics.Point(200,250)
     pnt_2 = graphics.Point(500,450)
     rec2 = graphics.Rectangle(pnt_1, pnt_2)
-    rec2.setFill("black")
+    rec2.setFill(graphics.color_rgb(210, 100, 110))
     rec2.draw(win)
 
     win.getMouse()
