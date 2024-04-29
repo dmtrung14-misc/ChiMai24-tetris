@@ -36,7 +36,7 @@ def rotate(shape,color):
         coord.append([X1,Y1])
     n_col = len(set(old_X))
     n_row = len(set(old_Y))
-    if (not (n_col == 1 and max(old_X) == 650)) and (not(n_col == 2 and max(old_X)==650)) and (not(n_col == 1 and min(old_X)==350)):
+    if (not (n_col == 1 and max(old_X) == 650)) and (not(n_col == 2 and max(old_X)==650)) and (not(n_col == 1 and min(old_X)==350)) and (not(n_col == 4 and min(old_Y)>=590)):
         grid = []
         new_grid = []
         for i in range(n_col):
