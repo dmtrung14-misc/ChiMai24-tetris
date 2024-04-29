@@ -165,13 +165,20 @@ def can_move_down(shape,center):
     
 
 def draw_score(score,win):
-    draw_score = graphics.Text(graphics.Point(180,650), "Score: {}".format(score))
+    draw_label = graphics.Text(graphics.Point(180,650), "Score")
+    draw_label.setFace("courier")
+    draw_label.setSize(24)
+    draw_label.setTextColor(graphics.color_rgb(210, 100, 110))
+    draw_label.setStyle("bold")
+    draw_label.draw(win)
+
+    draw_score = graphics.Text(graphics.Point(180,600), "{}".format(score))
     draw_score.setFace("courier")
     draw_score.setSize(24)
     draw_score.setTextColor(graphics.color_rgb(210, 100, 110))
     draw_score.setStyle("bold")
     draw_score.draw(win)
-    return draw_score
+    return draw_score, draw_label
 
 def draw_next_shape(win):
     draw_score = graphics.Text(graphics.Point(180,210), "Next Shape")
@@ -217,7 +224,7 @@ def choose_shape(x,y,win):
     if random_shape == square:
         color = graphics.color_rgb(245, 169, 174)
     elif random_shape == line:
-        color = graphics.color_rgb(212, 131, 137)
+        color = graphics.color_rgb(252, 157, 160)
     elif random_shape == left_l or random_shape == right_l:
         color = graphics.color_rgb(227, 109, 118)
     elif random_shape == r or random_shape == l:
@@ -276,8 +283,9 @@ def check_full_screen(shape):
         result = True
     return result
 
-def update_score(score_text, old_score, full_rows,win):
+def update_score(score_text, old_score, full_rows,win,label):
     new_score = old_score + len(full_rows) * 100
+    label.undraw()
     score_text.undraw()  # Remove previous score
     score_text = draw_score(new_score,win)  # Draw updated score
     return score_text, new_score
@@ -359,7 +367,7 @@ def main():
             predicted_shape, predicted_color = choose_shape(150,140,win)
 
             score = 0
-            score_text = draw_score(score,win)
+            score_text, label = draw_score(score,win)
             draw_next_shape(win)
             
             delay = 0.3
@@ -392,7 +400,7 @@ def main():
                         break
                     freeze_shape(shape,grid,win)
                     full_rows = check_full_rows(grid)
-                    score_text, score = update_score(score_text, score, full_rows,win)
+                    score_text, score = update_score(score_text, score, full_rows,win,label)
                     center = get_center(grid)
                     shape = draw_shape(predicted_shape) 
                     color = predicted_color
@@ -440,9 +448,6 @@ def main():
             play_game = False
 
     win.close()
-
-
-
         
 if __name__ == "__main__":
     main()
