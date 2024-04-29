@@ -6,7 +6,7 @@ from graphics import *
 # win = graphics.GraphWin("Tetris Game",700,700)
 
 def clicked_start(u: Point) -> bool:
-    if 250 <= u.getX() <= 450 and 50 <= u.getY() <= 190:
+    if 200 <= u.getX() <= 400 and 30 <= u.getY() <= 200:
         return True
     else:
         return False
