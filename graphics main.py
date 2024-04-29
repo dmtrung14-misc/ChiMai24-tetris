@@ -19,31 +19,11 @@ def move_down(shape,center):
         for i in shape:
             i.move(0,-30)
 
-# def rotate(shape):
-#     old_X = []
-#     old_Y = []
-#     coord = []
-#     for i in shape:
-#         X1 = (i.getP1()).getX()
-#         Y1 = (i.getP1()).getY()
-#         old_X.append(X1)
-#         old_Y.append(Y1)
-#         coord.append([X1,Y1])
-#     new_X = []
-#     new_Y = []
-#     min_X = min(old_X)
-#     n_col = len(set(old_X))
-#     for i in range(old_X.count(max(old_X))):
-#         new_X.append(min_X)
-#         min_X += 30
-#         new_Y.append(min(old_Y))
-#     if n_col == 1:
-#         break
-#     elif n_col >= 2:
-#         if [max(old_X)-30,]
-
 def check_grid(grid):
-    pass
+    for i in grid:
+        X1 = (i.getP1()).getX()
+        Y1 = (i.getP1()).getY()
+    
 
 
 def rotate(shape,color):
@@ -99,6 +79,13 @@ def rotate(shape,color):
         pnt2 = graphics.Point(random_shape[0][i] + 30,random_shape[1][i] + 30)
         block = graphics.Rectangle(pnt1,pnt2)
         new_shape.append(block)
+    
+    if n_row == 1:
+        for i in new_shape:
+            i.move(30,0)
+    if n_col == 1:
+        for i in new_shape:
+            i.move(-30,0)
     return new_shape, color
 
 
@@ -165,15 +152,20 @@ def draw_score(score):
     draw_score.setStyle("bold")
     draw_score.draw(win)
 
-def freeze_shape(shape,grid,center):
+def freeze_shape(shape,grid):
     for i in shape:
         j = i.clone()
         grid.append(j)
         i.undraw()
     for j in range(len(grid) -1, len(grid)-5, -1):
-        grid[j].draw(win)
-        x_y = grid[j].getCenter()
+        grid[j].draw(win) 
+
+def get_center(grid):
+    center = []      
+    for j in grid:
+        x_y = j.getCenter()
         center.append([x_y.getX(),x_y.getY()])
+    return center
 
 def draw_shape(x,y):
     square = [[x,x+30,x,x+30],
@@ -211,7 +203,24 @@ def draw_shape(x,y):
         shape.append(block)
     return shape, color
 
-
+def check_full_rows(grid):
+    full_rows = []
+    row_width = 330  # Width of a row
+    block_width = 30  # Width of a block
+    for y in range(20, 680, 30):  # Iterate over y-coordinates of rows
+        row_blocks = [block for block in grid if block.getP1().getY() == y]
+        row_width_filled = sum([block_width for block in row_blocks if block.getP1().getY() == y])  # Calculate total width of blocks in the row
+        if row_width_filled == row_width:  # If the row is fully occupied
+            full_rows.append(y)
+    for row in full_rows:
+        row_blocks = [block for block in grid if block.getP1().getY() == row]
+        for block in row_blocks:
+            block.undraw()  # Remove blocks in the full row
+            grid.remove(block)  # Remove the block from the grid
+        # Shift down blocks above the removed row
+        for block in grid:
+            if block.getP1().getY() > row:
+                block.move(0, -30)
 
 def main():
     
@@ -265,22 +274,16 @@ def main():
                     i.setFill(color)
                     i.setOutline("black")
                     i.draw(win)
-            # keystrings = win.checkKey()  
-            # if keystrings == "Up":
-            #     for i in shape:
-            #         i.undraw()
-            #     shape, color = rotate(shape)
-            #     for i in shape:
-            #         i.setFill(color)
-            #         i.setOutline("black")
-            #         i.draw(win)
         else:
-            freeze_shape(shape,grid,center)
+            freeze_shape(shape,grid)
+            check_full_rows(grid)
+            center = get_center(grid)
             shape, color = draw_shape(x,y)
             for i in shape:
                 i.setFill(color)
                 i.setOutline("black")
                 i.draw(win)
+        draw_score(score)
         time.sleep(delay)
         
         
