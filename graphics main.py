@@ -178,7 +178,7 @@ def draw_score(score,win):
     draw_score.setTextColor(graphics.color_rgb(210, 100, 110))
     draw_score.setStyle("bold")
     draw_score.draw(win)
-    return draw_score, draw_label
+    return draw_score
 
 def draw_next_shape(win):
     draw_score = graphics.Text(graphics.Point(180,210), "Next Shape")
@@ -283,9 +283,8 @@ def check_full_screen(shape):
         result = True
     return result
 
-def update_score(score_text, old_score, full_rows,win,label):
+def update_score(score_text, old_score, full_rows,win):
     new_score = old_score + len(full_rows) * 100
-    label.undraw()
     score_text.undraw()  # Remove previous score
     score_text = draw_score(new_score,win)  # Draw updated score
     return score_text, new_score
@@ -311,8 +310,6 @@ def leaderboard(scores,names,win):
         leader_score.draw(win)
         score_list.remove(score_list[place])
         name_score.remove(name_score[place])
-
-
 
 def main():
     names =[]
@@ -367,7 +364,7 @@ def main():
             predicted_shape, predicted_color = choose_shape(150,140,win)
 
             score = 0
-            score_text, label = draw_score(score,win)
+            score_text = draw_score(score,win)
             draw_next_shape(win)
             
             delay = 0.3
@@ -400,7 +397,7 @@ def main():
                         break
                     freeze_shape(shape,grid,win)
                     full_rows = check_full_rows(grid)
-                    score_text, score = update_score(score_text, score, full_rows,win,label)
+                    score_text, score = update_score(score_text, score, full_rows,win)
                     center = get_center(grid)
                     shape = draw_shape(predicted_shape) 
                     color = predicted_color
