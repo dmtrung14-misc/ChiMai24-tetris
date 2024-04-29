@@ -58,11 +58,11 @@ def rotate(shape,color):
                     new_grid[i][j] = 0 # if not, it's 0
                 min_X += 30 # change min_X 30 pixels to the right to check the next column in the row
             max_Y -= 30 # change min_Y 30 pixels down to check the next row
-        rotated_grid = []
-        for x in range(len(new_grid[0])):
-            new_row = []
-            for y in range(len(new_grid)-1, -1, -1):
-                new_row.append(new_grid[y][x])
+        rotated_grid = [] # create a list for the new shape projection
+        for x in range(len(new_grid[0])): # for each of the column in the old shape
+            new_row = [] # create a new row
+            for y in range(len(new_grid)-1, -1, -1): # for each of the row in the old shape from bottom to top
+                new_row.append(new_grid[y][x]) # add the value in the 
             rotated_grid.append(new_row)
         new_X = []
         new_Y = []
@@ -153,7 +153,15 @@ def draw_score(score):
     draw_score = graphics.Text(graphics.Point(180,650), "Score: {}".format(score))
     draw_score.setFace("courier")
     draw_score.setSize(24)
-    draw_score.setTextColor("black")
+    draw_score.setTextColor(graphics.color_rgb(210, 100, 110))
+    draw_score.setStyle("bold")
+    draw_score.draw(win)
+
+def draw_next_shape():
+    draw_score = graphics.Text(graphics.Point(180,210), "Next Shape")
+    draw_score.setFace("courier")
+    draw_score.setSize(24)
+    draw_score.setTextColor(graphics.color_rgb(210, 100, 110))
     draw_score.setStyle("bold")
     draw_score.draw(win)
 
@@ -172,7 +180,7 @@ def get_center(grid):
         center.append([x_y.getX(),x_y.getY()])
     return center
 
-def draw_shape(x,y):
+def choose_shape(x,y):
     square = [[x,x+30,x,x+30],
               [y,y,y-30,y-30]]
     line = [[x-30,x,x+30,x+60],
@@ -207,6 +215,14 @@ def draw_shape(x,y):
         block = graphics.Rectangle(pnt1,pnt2)
         shape.append(block)
     return shape, color
+
+def draw_shape(predicted_shape):
+    shape = []
+    for i in predicted_shape:
+        i.move(350,510)
+        shape.append(i)
+    return shape
+    
 
 def check_full_rows(grid):
     full_rows = []
@@ -252,27 +268,35 @@ def main():
     rec1 = graphics.Rectangle(pnt_a, pnt_b)
     rec1.setFill(graphics.color_rgb(250, 217, 219))
     rec1.setOutline("ivory")
-    
-    # indicates where to draw the circle
+    rec1.draw(win)
+
+    pnt_c = graphics.Point(30,50)
+    pnt_d = graphics.Point(320,250)
+    rec1 = graphics.Rectangle(pnt_c, pnt_d)
+    rec1.setFill(graphics.color_rgb(250, 217, 219))
+    rec1.setOutline("ivory")
     rec1.draw(win)
     
-    x = 500
-    y = 650
-    shape, color = draw_shape(x,y)
-    for i in shape:
+    predicted_shape, color = choose_shape(150,140)
+    for i in predicted_shape:
         i.setFill(color)
         i.setOutline("ivory")
         i.draw(win)
 
     score = 0
     draw_score(score)
+    draw_next_shape()
     
     delay = 0.3
     grid = []
     center = []
-    
-
-    while True:   
+    shape = draw_shape(predicted_shape) 
+    predicted_shape, color = choose_shape(150,140)
+    for i in predicted_shape:
+        i.setFill(color)
+        i.setOutline("ivory")
+        i.draw(win)
+    while True:  
         if can_move_down(shape,center):
             for i in shape:
                 i.move(0,-30)
@@ -297,16 +321,17 @@ def main():
             freeze_shape(shape,grid)
             check_full_rows(grid)
             center = get_center(grid)
-            shape, color = draw_shape(x,y)
-            for i in shape:
+            shape = draw_shape(predicted_shape) 
+            predicted_shape, color = choose_shape(150,140)
+            for i in predicted_shape:
                 i.setFill(color)
                 i.setOutline("ivory")
                 i.draw(win)
         draw_score(score)
         time.sleep(delay)
         
-    pnt_1 = graphics.Point(300,300)
-    pnt_2 = graphics.Point(400,400)
+    pnt_1 = graphics.Point(200,250)
+    pnt_2 = graphics.Point(500,450)
     rec2 = graphics.Rectangle(pnt_1, pnt_2)
     rec2.setFill("black")
     rec2.draw(win)
