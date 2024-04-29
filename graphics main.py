@@ -6,7 +6,7 @@ from graphics import *
 # win = graphics.GraphWin("Tetris Game",700,700)
 
 def clicked_start(u: Point) -> bool:
-    if 200 <= u.getX() <= 400 and 30 <= u.getY() <= 200:
+    if 200 <= u.getX() <= 400 and 200 <= u.getY() <= 360:
         return True
     else:
         return False
@@ -328,14 +328,23 @@ def main():
         cloud_image.draw(win)
         tetris_image = Image(Point(350, 530), "images/Tetris_font.png")
         tetris_image.draw(win)
-        start_image = Image(Point(350, 120), "images/start.png")
+        start_image = Image(Point(350, 280), "images/start.png")
         start_image.draw(win)
-        name_box = Entry(Point(350,280), 20)
+        name_box = Entry(Point(350,370), 20)
         name_box.setSize(18)
         name_box.setText("Enter your name")
         name_box.setFill(graphics.color_rgb(55, 17, 130))
         name_box.setTextColor("white")
         name_box.draw(win)
+        rec5 = graphics.Rectangle(graphics.Point(150,50), graphics.Point(550,200))
+        rec5.setFill(graphics.color_rgb(55, 17, 130))
+        rec5.setOutline("white")
+        rec5.draw(win)
+        draw_label = graphics.Text(graphics.Point(350,125), "Instructions \n \n 1. Use arrows to move the blocks \n \n 2. Use 'space' to rotate the blocks ")
+        draw_label.setFace("arial")
+        draw_label.setSize(16)
+        draw_label.setTextColor("white")
+        draw_label.draw(win)
         u = win.getMouse()
 
         if clicked_start(u) == True: 
@@ -378,14 +387,14 @@ def main():
                 if can_move_down(shape,center):
                     for i in shape:
                         i.move(0,-30)
-                    keystrings = win.checkKey()  
+                    keystrings = win.checkKey()
                     if keystrings == "Left":
                         move_left(shape,center)
                     elif keystrings == "Right":
                         move_right(shape,center)
                     elif keystrings == "Down":
                         move_down(shape,center) 
-                    elif keystrings == "Up":
+                    elif keystrings == "space":
                         for i in shape:
                             i.undraw()
                         shape, color = rotate(shape,color)
