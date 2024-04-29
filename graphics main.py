@@ -5,54 +5,59 @@ import time
 win = graphics.GraphWin("Tetris Game",700,700)
 
 def move_left(shape,center):
+    '''move each of the square in the shape 30 pixel to the left'''
     if can_move_left(shape,center):
         for i in shape:
             i.move(-30,0)
 
 def move_right(shape,center):
+    '''move each of the square in the shape 30 pixel to the right'''
     if can_move_right(shape,center):
         for i in shape:
             i.move(30,0)
 
 def move_down(shape,center):
+    '''move each of the square in the shape 30 pixel down'''
     if can_move_down(shape,center):
         for i in shape:
             i.move(0,-30)
 
-def check_grid(grid):
-    for i in grid:
-        X1 = (i.getP1()).getX()
-        Y1 = (i.getP1()).getY()
-
 def rotate(shape,color):
-    old_X = []
-    old_Y = []
-    coord = []
-    for i in shape:
-        X1 = (i.getP1()).getX()
-        Y1 = (i.getP1()).getY()
-        old_X.append(X1)
-        old_Y.append(Y1)
-        coord.append([X1,Y1])
-    n_col = len(set(old_X))
-    n_row = len(set(old_Y))
+    '''Take a shape and rotate it to the right. 
+    If the shape is at the edge of the playing screen, it won't rotate.
+    Rotation is done by:
+    1. Project the shape's shape onto a grid of 0 and 1 demonstrating rows and columns
+    2. Turn the rows into columns and columns into rows
+    3. Project the grid of 1 and 0 into the new shape by using the old X and Y'''
+    old_X = [] #create a list to store old x coordinates
+    old_Y = [] #create a list to store old y coordinates
+    coord = [] #create a list to store corresponding coordinate
+    for i in shape: #iterate over each square in the old shape
+        X1 = (i.getP1()).getX() # get the x coordinate
+        Y1 = (i.getP1()).getY() # get the y coordinate
+        old_X.append(X1) # append the x coordinate to the list
+        old_Y.append(Y1) # append the y coordinate to the list
+        coord.append([X1,Y1]) # append the 2 coordinates to the list
+    n_col = len(set(old_X)) # get the number of columns in the old shape by counting the number of unique x values
+    n_row = len(set(old_Y)) # get the number of row in the old shape by counting the number of unique y values
+    # check if the shape is on the edge
     if (not (n_col == 1 and max(old_X) == 650)) and (not(n_col == 2 and max(old_X)==650)) and (not(n_col == 1 and min(old_X)==350)) and (not(n_col == 4 and min(old_Y)>=590)):
-        grid = []
-        new_grid = []
-        for i in range(n_col):
-            grid.append(0)
-        for i in range(n_row):
-            new_grid.append(grid.copy())
-        max_Y = max(old_Y)
-        for i in range(n_row):
-            min_X = min(old_X)
-            for j in range(n_col):
-                if [min_X,max_Y] in coord:
-                    new_grid[i][j] = 1
-                else:
-                    new_grid[i][j] = 0
-                min_X += 30
-            max_Y -= 30
+        grid = [] #create a list for the number of columns
+        new_grid = [] #create a list for the number of rows
+        for i in range(n_col): #iterate over the number of columns
+            grid.append(0) # add one placeholder to the list
+        for i in range(n_row): #iterate over the number of rows
+            new_grid.append(grid.copy()) #add a list for each row in the shape
+        max_Y = max(old_Y) 
+        for i in range(n_row): # iterate over the number of rows
+            min_X = min(old_X) # change min_X back to min(old_X) for the next row
+            for j in range(n_col): # iterate over the number of columns
+                if [min_X,max_Y] in coord: #check if there is a block with the coordinate (min_X,max_Y) in the old shape
+                    new_grid[i][j] = 1 # if there's a block, the place in the new_grid become 1
+                else: 
+                    new_grid[i][j] = 0 # if not, it's 0
+                min_X += 30 # change min_X 30 pixels to the right to check the next column in the row
+            max_Y -= 30 # change min_Y 30 pixels down to check the next row
         rotated_grid = []
         for x in range(len(new_grid[0])):
             new_row = []
@@ -222,6 +227,17 @@ def check_full_rows(grid):
             if block.getP1().getY() > row:
                 block.move(0, -30)
 
+def check_full_screen(shape):
+    result = False
+    Y_coord = []
+    for i in shape:
+        Y1 = i.getP1().getY()
+        Y_coord.append(Y1)
+    if max(Y_coord) == 650:
+        result = True
+    return result
+
+
 def main():
     
     # Sets the coordinate system
@@ -276,6 +292,8 @@ def main():
                     i.setOutline("ivory")
                     i.draw(win)
         else:
+            if check_full_screen(shape):
+                break
             freeze_shape(shape,grid)
             check_full_rows(grid)
             center = get_center(grid)
@@ -287,6 +305,12 @@ def main():
         draw_score(score)
         time.sleep(delay)
         
+    pnt_1 = graphics.Point(300,300)
+    pnt_2 = graphics.Point(400,400)
+    rec2 = graphics.Rectangle(pnt_1, pnt_2)
+    rec2.setFill("black")
+    rec2.draw(win)
+    win.getMouse()
         
 if __name__ == "__main__":
     main()
