@@ -2,7 +2,7 @@ import graphics
 import random
 import time
 
-win = graphics.GraphWin("My Window",700,700)
+win = graphics.GraphWin("Tetris Game",700,700)
 
 def move_left(shape,center):
     if can_move_left(shape,center):
@@ -23,8 +23,6 @@ def check_grid(grid):
     for i in grid:
         X1 = (i.getP1()).getX()
         Y1 = (i.getP1()).getY()
-    
-
 
 def rotate(shape,color):
     old_X = []
@@ -38,54 +36,56 @@ def rotate(shape,color):
         coord.append([X1,Y1])
     n_col = len(set(old_X))
     n_row = len(set(old_Y))
-    grid = []
-    new_grid = []
-    for i in range(n_col):
-        grid.append(0)
-    for i in range(n_row):
-        new_grid.append(grid.copy())
-    max_Y = max(old_Y)
-    for i in range(n_row):
-        min_X = min(old_X)
-        for j in range(n_col):
-            if [min_X,max_Y] in coord:
-                new_grid[i][j] = 1
-            else:
-                new_grid[i][j] = 0
-            min_X += 30
-        max_Y -= 30
-    rotated_grid = []
-    for x in range(len(new_grid[0])):
-        new_row = []
-        for y in range(len(new_grid)-1, -1, -1):
-            new_row.append(new_grid[y][x])
-        rotated_grid.append(new_row)
-    new_X = []
-    new_Y = []
-    min_Y = min(old_Y)
-    for i in range(n_col):
-        min_X = min(old_X)
-        for j in range(n_row):
-            if rotated_grid[i][j] == 1:
-                new_X.append(min_X)
-                new_Y.append(min_Y + (30*(n_col-i-1)))
-            min_X += 30
-    random_shape = []
-    random_shape.append(new_X)
-    random_shape.append(new_Y)
-    new_shape = []
-    for i in range(4):
-        pnt1 = graphics.Point(random_shape[0][i],random_shape[1][i])
-        pnt2 = graphics.Point(random_shape[0][i] + 30,random_shape[1][i] + 30)
-        block = graphics.Rectangle(pnt1,pnt2)
-        new_shape.append(block)
-    
-    if n_row == 1:
-        for i in new_shape:
-            i.move(30,0)
-    if n_col == 1:
-        for i in new_shape:
-            i.move(-30,0)
+    if (not (n_col == 1 and max(old_X) == 650)) and (not(n_col == 2 and max(old_X)==650)) and (not(n_col == 1 and min(old_X)==350)):
+        grid = []
+        new_grid = []
+        for i in range(n_col):
+            grid.append(0)
+        for i in range(n_row):
+            new_grid.append(grid.copy())
+        max_Y = max(old_Y)
+        for i in range(n_row):
+            min_X = min(old_X)
+            for j in range(n_col):
+                if [min_X,max_Y] in coord:
+                    new_grid[i][j] = 1
+                else:
+                    new_grid[i][j] = 0
+                min_X += 30
+            max_Y -= 30
+        rotated_grid = []
+        for x in range(len(new_grid[0])):
+            new_row = []
+            for y in range(len(new_grid)-1, -1, -1):
+                new_row.append(new_grid[y][x])
+            rotated_grid.append(new_row)
+        new_X = []
+        new_Y = []
+        min_Y = min(old_Y)
+        for i in range(n_col):
+            min_X = min(old_X)
+            for j in range(n_row):
+                if rotated_grid[i][j] == 1:
+                    new_X.append(min_X)
+                    new_Y.append(min_Y + (30*(n_col-i-1)))
+                min_X += 30
+        random_shape = []
+        random_shape.append(new_X)
+        random_shape.append(new_Y)
+        new_shape = []
+        for i in range(4):
+            pnt1 = graphics.Point(random_shape[0][i],random_shape[1][i])
+            pnt2 = graphics.Point(random_shape[0][i] + 30,random_shape[1][i] + 30)
+            block = graphics.Rectangle(pnt1,pnt2)
+            new_shape.append(block)
+        if n_row == 1:
+            for i in new_shape:
+                i.move(30,0)
+        if n_col == 1:
+            for i in new_shape:
+                i.move(-30,0)
+    else:
+        new_shape = shape
     return new_shape, color
 
 
@@ -186,15 +186,15 @@ def draw_shape(x,y):
     shapes = [square,line,right_l,left_l,r,l,t]
     random_shape = random.choice(shapes)
     if random_shape == square:
-        color = "yellow2"
+        color = graphics.color_rgb(245, 169, 174)
     elif random_shape == line:
-        color = "red2"
+        color = graphics.color_rgb(212, 131, 137)
     elif random_shape == left_l or random_shape == right_l:
-        color = "orange2"
+        color = graphics.color_rgb(227, 109, 118)
     elif random_shape == r or random_shape == l:
-        color = "blue2"
+        color = graphics.color_rgb(237, 130, 139)
     elif random_shape == t:
-        color = "green2"
+        color = graphics.color_rgb(240, 103, 115)
     shape = []
     for i in range(4):
         pnt1 = graphics.Point(random_shape[0][i],random_shape[1][i])
@@ -228,13 +228,14 @@ def main():
     win.setCoords(0,0,700,700)
     
     # changes the background color
-    win.setBackground("lightblue") # <-- comment later
+    win.setBackground(graphics.color_rgb(222,236,255))
     
     # creates a black rec1 from lower-left pnt_a to upper-right pnt_b
     pnt_a = graphics.Point(350,20)
     pnt_b = graphics.Point(680,680)
     rec1 = graphics.Rectangle(pnt_a, pnt_b)
-    rec1.setFill(graphics.color_rgb(0, 0, 0))
+    rec1.setFill(graphics.color_rgb(250, 217, 219))
+    rec1.setOutline("ivory")
     
     # indicates where to draw the circle
     rec1.draw(win)
@@ -244,7 +245,7 @@ def main():
     shape, color = draw_shape(x,y)
     for i in shape:
         i.setFill(color)
-        i.setOutline("black")
+        i.setOutline("ivory")
         i.draw(win)
 
     score = 0
@@ -272,7 +273,7 @@ def main():
                 shape, color = rotate(shape,color)
                 for i in shape:
                     i.setFill(color)
-                    i.setOutline("black")
+                    i.setOutline("ivory")
                     i.draw(win)
         else:
             freeze_shape(shape,grid)
@@ -281,7 +282,7 @@ def main():
             shape, color = draw_shape(x,y)
             for i in shape:
                 i.setFill(color)
-                i.setOutline("black")
+                i.setOutline("ivory")
                 i.draw(win)
         draw_score(score)
         time.sleep(delay)
