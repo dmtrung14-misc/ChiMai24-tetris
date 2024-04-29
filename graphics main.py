@@ -277,9 +277,9 @@ def main():
     rec1.setOutline("ivory")
     rec1.draw(win)
     
-    predicted_shape, color = choose_shape(150,140)
+    predicted_shape, predicted_color = choose_shape(150,140)
     for i in predicted_shape:
-        i.setFill(color)
+        i.setFill(predicted_color)
         i.setOutline("ivory")
         i.draw(win)
 
@@ -291,9 +291,10 @@ def main():
     grid = []
     center = []
     shape = draw_shape(predicted_shape) 
-    predicted_shape, color = choose_shape(150,140)
+    color = predicted_color
+    predicted_shape, predicted_color = choose_shape(150,140)
     for i in predicted_shape:
-        i.setFill(color)
+        i.setFill(predicted_color)
         i.setOutline("ivory")
         i.draw(win)
     while True:  
@@ -322,9 +323,10 @@ def main():
             check_full_rows(grid)
             center = get_center(grid)
             shape = draw_shape(predicted_shape) 
-            predicted_shape, color = choose_shape(150,140)
+            color = predicted_color
+            predicted_shape, predicted_color = choose_shape(150,140)
             for i in predicted_shape:
-                i.setFill(color)
+                i.setFill(predicted_color)
                 i.setOutline("ivory")
                 i.draw(win)
         draw_score(score)
