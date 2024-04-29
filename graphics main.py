@@ -19,6 +19,89 @@ def move_down(shape,center):
         for i in shape:
             i.move(0,-30)
 
+# def rotate(shape):
+#     old_X = []
+#     old_Y = []
+#     coord = []
+#     for i in shape:
+#         X1 = (i.getP1()).getX()
+#         Y1 = (i.getP1()).getY()
+#         old_X.append(X1)
+#         old_Y.append(Y1)
+#         coord.append([X1,Y1])
+#     new_X = []
+#     new_Y = []
+#     min_X = min(old_X)
+#     n_col = len(set(old_X))
+#     for i in range(old_X.count(max(old_X))):
+#         new_X.append(min_X)
+#         min_X += 30
+#         new_Y.append(min(old_Y))
+#     if n_col == 1:
+#         break
+#     elif n_col >= 2:
+#         if [max(old_X)-30,]
+
+def check_grid(grid):
+    pass
+
+
+def rotate(shape,color):
+    old_X = []
+    old_Y = []
+    coord = []
+    for i in shape:
+        X1 = (i.getP1()).getX()
+        Y1 = (i.getP1()).getY()
+        old_X.append(X1)
+        old_Y.append(Y1)
+        coord.append([X1,Y1])
+    n_col = len(set(old_X))
+    n_row = len(set(old_Y))
+    grid = []
+    new_grid = []
+    for i in range(n_col):
+        grid.append(0)
+    for i in range(n_row):
+        new_grid.append(grid.copy())
+    max_Y = max(old_Y)
+    for i in range(n_row):
+        min_X = min(old_X)
+        for j in range(n_col):
+            if [min_X,max_Y] in coord:
+                new_grid[i][j] = 1
+            else:
+                new_grid[i][j] = 0
+            min_X += 30
+        max_Y -= 30
+    rotated_grid = []
+    for x in range(len(new_grid[0])):
+        new_row = []
+        for y in range(len(new_grid)-1, -1, -1):
+            new_row.append(new_grid[y][x])
+        rotated_grid.append(new_row)
+    new_X = []
+    new_Y = []
+    min_Y = min(old_Y)
+    for i in range(n_col):
+        min_X = min(old_X)
+        for j in range(n_row):
+            if rotated_grid[i][j] == 1:
+                new_X.append(min_X)
+                new_Y.append(min_Y + (30*(n_col-i-1)))
+            min_X += 30
+    random_shape = []
+    random_shape.append(new_X)
+    random_shape.append(new_Y)
+    new_shape = []
+    for i in range(4):
+        pnt1 = graphics.Point(random_shape[0][i],random_shape[1][i])
+        pnt2 = graphics.Point(random_shape[0][i] + 30,random_shape[1][i] + 30)
+        block = graphics.Rectangle(pnt1,pnt2)
+        new_shape.append(block)
+    return new_shape, color
+
+
 def can_move_left(shape,center):
     result = True
     pointX1 = []
@@ -147,62 +230,6 @@ def main():
     # indicates where to draw the circle
     rec1.draw(win)
     
-    # draw a piece
-    # piece = graphics.Rectangle(graphics.Point(450,550),graphics.Point(480,580))
-    # piece.setFill("yellow")
-    # piece.setOutline("black")
-
-    #draw the shapes
-    # square = [graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
-    #           graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680)),
-    #           graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-    #           graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650))]
-    
-    # line = [graphics.Rectangle(graphics.Point(470,650),graphics.Point(500,680)),
-    #         graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
-    #         graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680)),
-    #         graphics.Rectangle(graphics.Point(560,650),graphics.Point(590,680))]
-    
-    # right_l = [graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650)),
-    #         graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-    #         graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
-    #         graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680))]
-    
-    # left_l = [graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650)),
-    #         graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-    #         graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
-    #         graphics.Rectangle(graphics.Point(470,650),graphics.Point(500,680))]
-    
-    # r = [graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
-    #     graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-    #     graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
-    #     graphics.Rectangle(graphics.Point(470,650),graphics.Point(500,680))]
-    
-    # l = [graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680)),
-    #     graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-    #     graphics.Rectangle(graphics.Point(530,650),graphics.Point(560,680)),
-    #     graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650))]
-    
-    # t = [graphics.Rectangle(graphics.Point(470,620),graphics.Point(500,650)),
-    #     graphics.Rectangle(graphics.Point(500,620),graphics.Point(530,650)),
-    #     graphics.Rectangle(graphics.Point(530,620),graphics.Point(560,650)),
-    #     graphics.Rectangle(graphics.Point(500,650),graphics.Point(530,680))]
-    
-    # shapes = [square,line,right_l,left_l,r,l,t]
-    # shape = random.choice(shapes)
-    # for j in shape:
-    #     if shape == square:
-    #         j.setFill("yellow2")
-    #     elif shape == line:
-    #         j.setFill("red2")
-    #     elif shape == left_l or shape == right_l:
-    #         j.setFill("orange2")
-    #     elif shape == r or shape == l:
-    #         j.setFill("blue2")
-    #     elif shape == t:
-    #         j.setFill("green2")
-    #     j.setOutline("black")
-    #     j.draw(win)
     x = 500
     y = 650
     shape, color = draw_shape(x,y)
@@ -217,9 +244,12 @@ def main():
     delay = 0.3
     grid = []
     center = []
+    
 
     while True:   
         if can_move_down(shape,center):
+            for i in shape:
+                i.move(0,-30)
             keystrings = win.checkKey()  
             if keystrings == "Left":
                 move_left(shape,center)
@@ -227,8 +257,23 @@ def main():
                 move_right(shape,center)
             elif keystrings == "Down":
                 move_down(shape,center) 
-            for i in shape:
-                i.move(0,-30)
+            elif keystrings == "Up":
+                for i in shape:
+                    i.undraw()
+                shape, color = rotate(shape,color)
+                for i in shape:
+                    i.setFill(color)
+                    i.setOutline("black")
+                    i.draw(win)
+            # keystrings = win.checkKey()  
+            # if keystrings == "Up":
+            #     for i in shape:
+            #         i.undraw()
+            #     shape, color = rotate(shape)
+            #     for i in shape:
+            #         i.setFill(color)
+            #         i.setOutline("black")
+            #         i.draw(win)
         else:
             freeze_shape(shape,grid,center)
             shape, color = draw_shape(x,y)
@@ -236,20 +281,6 @@ def main():
                 i.setFill(color)
                 i.setOutline("black")
                 i.draw(win)
-            # shape = random.choice(shapes)
-            # for j in shape:
-            #     if shape == square:
-            #         j.setFill("yellow2")
-            #     elif shape == line:
-            #         j.setFill("red2")
-            #     elif shape == left_l or shape == right_l:
-            #         j.setFill("orange2")
-            #     elif shape == r or shape == l:
-            #         j.setFill("blue2")
-            #     elif shape == t:
-            #         j.setFill("green2")
-            #     j.setOutline("black")
-            #     j.draw(win)
         time.sleep(delay)
         
         
