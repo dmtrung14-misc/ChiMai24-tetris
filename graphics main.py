@@ -317,7 +317,7 @@ def main():
     scores = []
     play_game = True
     while play_game:
-        win = GraphWin("Menu",700,700)
+        win = GraphWin("Tetris Game",700,700)
         win.setBackground(graphics.color_rgb(222,236,255))
 
         # Sets the coordinate system
@@ -349,12 +349,12 @@ def main():
 
         if clicked_start(u) == True: 
             names.append(name_box.getText())
-            win.close()
-            win = graphics.GraphWin("Tetris Game",700,700)
-            win.setBackground(graphics.color_rgb(222,236,255))
-
-            # Sets the coordinate system
-            win.setCoords(0,0,700,700)
+            cloud_image.undraw()
+            tetris_image.undraw()
+            start_image.undraw()
+            name_box.undraw()
+            rec5.undraw()
+            draw_label.undraw()
             
             # creates a black rec1 from lower-left pnt_a to upper-right pnt_b
             pnt_a = graphics.Point(350,20)
@@ -377,7 +377,7 @@ def main():
             score_text, label_text = draw_score(score,win)
             draw_next_shape(win)
             
-            delay = 0.3
+            delay = 0.2
             grid = []
             center = []
             shape = draw_shape(predicted_shape) 
