@@ -78,7 +78,8 @@ def rotate(shape,color):
             new_row = [] # create a new row
             for y in range(len(new_grid)-1, -1, -1): # for each of the row in the old shape from bottom to top
                 new_row.append(new_grid[y][x]) # add the value in the 
-            rotated_grid.append(new_row)
+            rotated_grid.append(new_row) # add the new row to the new grid
+        # change the rows from 0 and 1 to the x and y coordinates
         new_X = []
         new_Y = []
         min_Y = min(old_Y)
@@ -89,6 +90,7 @@ def rotate(shape,color):
                     new_X.append(min_X)
                     new_Y.append(min_Y + (30*(n_col-i-1)))
                 min_X += 30
+        # put the lists of coordinates into a new shape to draw on the screen
         random_shape = []
         random_shape.append(new_X)
         random_shape.append(new_Y)
@@ -98,6 +100,7 @@ def rotate(shape,color):
             pnt2 = graphics.Point(random_shape[0][i] + 30,random_shape[1][i] + 30)
             block = graphics.Rectangle(pnt1,pnt2)
             new_shape.append(block)
+        # check of the rotated shape would be outside of the playing grid
         if n_row == 1:
             for i in new_shape:
                 i.move(30,0)
@@ -110,6 +113,9 @@ def rotate(shape,color):
 
 
 def can_move_left(shape,center):
+    '''check if the shape can move left:
+    1. it's minimum x coordinates are not outside of the playing grid
+    2. there's no block to the left of the shape'''
     result = True
     pointX1 = []
     for i in shape:
@@ -128,6 +134,9 @@ def can_move_left(shape,center):
     return result
 
 def can_move_right(shape,center):
+    '''check if the shape can move right:
+    1. it's maximum x coordinates are not outside of the playing grid
+    2. there's no block to the right of the shape'''
     result = True
     pointX2 = []
     for i in shape:
@@ -146,6 +155,9 @@ def can_move_right(shape,center):
     return result
 
 def can_move_down(shape,center):
+    '''check if the shape can move down:
+    1. it's minimum y coordinates are not outside of the playing grid
+    2. there's no block under the shape'''
     result = True
     pointY = []
     for i in shape:
@@ -165,6 +177,7 @@ def can_move_down(shape,center):
     
 
 def draw_score(score,win):
+    '''draw score from the provided score in the argument and return the graphwin text objects'''
     draw_label = graphics.Text(graphics.Point(180,650), "Score")
     draw_label.setFace("courier")
     draw_label.setSize(24)
@@ -181,6 +194,7 @@ def draw_score(score,win):
     return draw_score , draw_label
 
 def draw_next_shape(win):
+    '''draw the text "Next Shape" on the screen'''
     draw_score = graphics.Text(graphics.Point(180,210), "Next Shape")
     draw_score.setFace("courier")
     draw_score.setSize(24)
@@ -189,6 +203,8 @@ def draw_next_shape(win):
     draw_score.draw(win)
 
 def freeze_shape(shape,grid,win):
+    '''for each of the shape that has reach the bottom and can't move anymore,
+    add that shape to the list grid and undraw that shape from win'''
     for i in shape:
         j = i.clone()
         grid.append(j)
@@ -197,6 +213,7 @@ def freeze_shape(shape,grid,win):
         grid[j].draw(win) 
 
 def get_center(grid):
+    '''get the center x and y coordinates of the shape'''
     center = []      
     for j in grid:
         x_y = j.getCenter()
@@ -204,6 +221,8 @@ def get_center(grid):
     return center
 
 def choose_shape(x,y,win):
+    '''Randomly choose and draw a shape from the given coordinates. The possible shapes are given in coordinates variation from the given x and y.
+    Assign a certain color to the shape chosen and return both the shape and the color'''
     square = [[x,x+30,x,x+30],
               [y,y,y-30,y-30]]
     line = [[x-30,x,x+30,x+60],
@@ -244,6 +263,7 @@ def choose_shape(x,y,win):
     return shape, color
 
 def draw_shape(predicted_shape):
+    '''move the shape from the "Next Shape" area to the beginning of the playing grid'''
     shape = []
     for i in predicted_shape:
         i.move(350,510)
@@ -252,6 +272,9 @@ def draw_shape(predicted_shape):
     
 
 def check_full_rows(grid):
+    '''Check if the row is full, if it's full, collect the row's y coordinates.
+    Erase every block with the same y coordinates and move the rows with larger coordinates down to fill in the missing row.
+    Return the list of full rows' y coordinates.'''
     full_rows = []
     row_width = 330  # Width of a row
     block_width = 30  # Width of a block
@@ -274,6 +297,7 @@ def check_full_rows(grid):
     return full_rows
 
 def check_full_screen(shape):
+    '''Check if the shape's maximum y coordinates is larger than the playing screen'''
     result = False
     Y_coord = []
     for i in shape:
@@ -284,6 +308,8 @@ def check_full_screen(shape):
     return result
 
 def update_score(score_text, old_score, full_rows, label_text, win):
+    '''Take the old score, and the number of full rows. 
+    Count the number of full rows to update the score accordingly'''
     new_score = old_score + len(full_rows) * 100
     score_text.undraw()  # Remove previous score
     label_text.undraw()
@@ -291,6 +317,8 @@ def update_score(score_text, old_score, full_rows, label_text, win):
     return score_text, new_score, label_text
 
 def leaderboard(scores,names,win):
+    '''take the list of all the players and all the scores collected, 
+    sort the 10 highest scores from high to low and draw the leaderboard on the screen'''
     score_list = scores.copy()
     name_score = []
     for i in range(len(names)):
@@ -313,9 +341,16 @@ def leaderboard(scores,names,win):
         name_score.remove(name_score[place])
 
 def main():
+    '''The main loop for the game:
+    1. Take the user's name and store it
+    2. Begin the game and the main loop
+    3. If game over, store the score and update the leaderboard
+    4. The user can play again or exit the game'''
+    # create 2 lists to store the user name and score
     names =[]
     scores = []
     play_game = True
+    # if play_game is true(at the start or the user choose to play again), draw the start screen
     while play_game:
         win = GraphWin("Tetris Game",700,700)
         win.setBackground(graphics.color_rgb(222,236,255))
@@ -347,7 +382,9 @@ def main():
         draw_label.draw(win)
         u = win.getMouse()
 
+        # if the user click to start the game, begin the main game 
         if clicked_start(u) == True: 
+            # erase the old elements of the start screen and set up the new playing screen
             names.append(name_box.getText())
             cloud_image.undraw()
             tetris_image.undraw()
@@ -383,6 +420,9 @@ def main():
             shape = draw_shape(predicted_shape) 
             color = predicted_color
             predicted_shape, predicted_color = choose_shape(150,140,win)
+            '''The main game loop check if the shape can move down or not.
+            If the shape can move down, the user can use the keys to move the shape to the left, right, down or rotate the shape and the shape will move down.
+            If the shape can't move down, check if game over, then check for full rows, update the score, draw a new shape, and wait the delay amount of time'''
             while True:  
                 if can_move_down(shape,center):
                     for i in shape:
@@ -414,6 +454,7 @@ def main():
                     predicted_shape, predicted_color = choose_shape(150,140,win)
                 time.sleep(delay)
         
+        '''If game over, the main game loop break and start drawing the leaderboard screen'''
         scores.append(score)
         rec2 = graphics.Rectangle(graphics.Point(150,50), graphics.Point(550,550))
         rec2.setFill(graphics.color_rgb(55, 17, 130))
@@ -446,7 +487,8 @@ def main():
         leader_score.draw(win)
 
         leaderboard(scores,names,win)
-
+        
+        # check if the user want to play again or not
         click_point = win.getMouse()
         if inside(click_point,rec3):
             play_game = True
