@@ -10,3 +10,21 @@ We make the game as a clone to the famous Tetris game, using graphics module fro
 Sources for images and design:
 - Pinterest
 - Google
+
+**Installation guide**:
+
+Create a venv:
+```
+python -m venv tetrix
+```
+
+Activate venv (Windows Terminal):
+```
+venv_name\Scripts\activate
+```
+Install packages:
+```
+pip install -r requirements.txt
+```
+
+

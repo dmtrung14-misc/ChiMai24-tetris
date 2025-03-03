@@ -1,1 +1,4 @@
 tetrix
+build
+dist
+*.spec
