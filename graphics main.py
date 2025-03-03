@@ -1,9 +1,16 @@
+import json
 import graphics
 import random
 import time
 from graphics import *
+from wonderwords import RandomWord
+from appdirs import user_data_dir
 
 # win = graphics.GraphWin("Tetris Game",700,700)
+
+APPNAME = "Tetris"
+leaderboard_file = os.path.join(user_data_dir(APPNAME, appauthor=APPNAME), 'leaderboard.json')
+
 
 def clicked_start(u: Point) -> bool:
     if 200 <= u.getX() <= 400 and 200 <= u.getY() <= 360:
@@ -321,24 +328,48 @@ def leaderboard(scores,names,win):
     sort the 10 highest scores from high to low and draw the leaderboard on the screen'''
     score_list = scores.copy()
     name_score = []
-    for i in range(len(names)):
-        name_score.append([names[i],score_list[i]])
-    for i in range(10):
-        highest_score = 0
-        for score in score_list:
-            if score > highest_score:
-                highest_score = score
-        if highest_score not in score_list:
-            break
-        place = score_list.index(highest_score)
-        leader_score = graphics.Text(graphics.Point(350,450 - (30*i) ), "{}\t.....\t{}".format(name_score[place][0],name_score[place][1]))
+    name_score = list(zip(names,score_list)) + load_leaderboard()
+    name_score = sorted(name_score, key = lambda x: x[1], reverse = True)
+    for i in range(min(10, len(name_score))):
+        leader_score = graphics.Text(graphics.Point(350,450 - (30*i) ), "{}\t.....\t{}".format(name_score[i][0],name_score[i][1]))
         leader_score.setFace("courier")
         leader_score.setSize(16)
         leader_score.setTextColor("white")
         leader_score.setStyle("bold")
         leader_score.draw(win)
-        score_list.remove(score_list[place])
-        name_score.remove(name_score[place])
+    
+    save_leaderboard(name_score)
+
+def save_leaderboard(leaderboard):
+    leader_score_json = dict()
+    for _ in range(10):
+        try:
+            leader_score_json[leaderboard[_][0]] = leaderboard[_][1]
+        except IndexError:
+            break
+    os.makedirs(os.path.dirname(leaderboard_file), exist_ok=True)
+    with open(leaderboard_file, 'w') as f:
+        json.dump(leader_score_json, f)
+
+def load_leaderboard():
+    try:
+        with open(leaderboard_file, 'r') as f:
+            data = json.load(f)
+            print(data)
+            return sorted(data.items(), key=lambda x: x[1], reverse=True)
+    except (FileNotFoundError, json.JSONDecodeError):
+        # create the file
+        # Ensure the directory exists before opening the file
+        os.makedirs(os.path.dirname(leaderboard_file), exist_ok=True)
+        with open(leaderboard_file, 'w') as f:
+            json.dump({}, f)
+        return []
+    
+def generate_random_name():
+    r = RandomWord()
+
+    return r.word(include_parts_of_speech=["adjectives"]).capitalize() + r.word(include_parts_of_speech=["nouns"]).capitalize()
+
 
 def main():
     '''The main loop for the game:
@@ -351,6 +382,7 @@ def main():
     scores = []
     play_game = True
     # if play_game is true(at the start or the user choose to play again), draw the start screen
+    curName = None
     while play_game:
         win = GraphWin("Tetris Game",700,700)
         win.setBackground(graphics.color_rgb(222,236,255))
@@ -367,7 +399,7 @@ def main():
         start_image.draw(win)
         name_box = Entry(Point(350,370), 20)
         name_box.setSize(18)
-        name_box.setText("Enter your name")
+        name_box.setText(curName if curName else generate_random_name())
         name_box.setFill(graphics.color_rgb(55, 17, 130))
         name_box.setTextColor("white")
         name_box.draw(win)
@@ -382,58 +414,82 @@ def main():
         draw_label.draw(win)
         u = win.getMouse()
 
-        # if the user click to start the game, begin the main game 
-        if clicked_start(u) == True: 
-            # erase the old elements of the start screen and set up the new playing screen
-            names.append(name_box.getText())
-            cloud_image.undraw()
-            tetris_image.undraw()
-            start_image.undraw()
-            name_box.undraw()
-            rec5.undraw()
-            draw_label.undraw()
-            
-            # creates a black rec1 from lower-left pnt_a to upper-right pnt_b
-            pnt_a = graphics.Point(350,20)
-            pnt_b = graphics.Point(680,680)
-            rec1 = graphics.Rectangle(pnt_a, pnt_b)
-            rec1.setFill(graphics.color_rgb(250, 217, 219))
-            rec1.setOutline("ivory")
-            rec1.draw(win)
+        # if the game hasn't started, then wait and keep listening for start event
+        while clicked_start(u) == False:
+            u = win.getMouse()
 
-            pnt_c = graphics.Point(30,50)
-            pnt_d = graphics.Point(320,250)
-            rec1 = graphics.Rectangle(pnt_c, pnt_d)
-            rec1.setFill(graphics.color_rgb(250, 217, 219))
-            rec1.setOutline("ivory")
-            rec1.draw(win)
-            
-            predicted_shape, predicted_color = choose_shape(150,140,win)
+        # HERE iS THE BEGINNING OF THE GAME
+        # erase the old elements of the start screen and set up the new playing screen
+        curName = name_box.getText()
+        names.append(name_box.getText())
+        cloud_image.undraw()
+        tetris_image.undraw()
+        start_image.undraw()
+        name_box.undraw()
+        rec5.undraw()
+        draw_label.undraw()
+        
+        # creates a black rec1 from lower-left pnt_a to upper-right pnt_b
+        pnt_a = graphics.Point(350,20)
+        pnt_b = graphics.Point(680,680)
+        rec1 = graphics.Rectangle(pnt_a, pnt_b)
+        rec1.setFill(graphics.color_rgb(250, 217, 219))
+        rec1.setOutline("ivory")
+        rec1.draw(win)
 
-            score = 0
-            score_text, label_text = draw_score(score,win)
-            draw_next_shape(win)
-            
-            delay = 0.2
-            grid = []
-            center = []
-            shape = draw_shape(predicted_shape) 
-            color = predicted_color
-            predicted_shape, predicted_color = choose_shape(150,140,win)
-            '''The main game loop check if the shape can move down or not.
-            If the shape can move down, the user can use the keys to move the shape to the left, right, down or rotate the shape and the shape will move down.
-            If the shape can't move down, check if game over, then check for full rows, update the score, draw a new shape, and wait the delay amount of time'''
-            while True:  
-                if can_move_down(shape,center):
+        pnt_c = graphics.Point(30,50)
+        pnt_d = graphics.Point(320,250)
+        rec1 = graphics.Rectangle(pnt_c, pnt_d)
+        rec1.setFill(graphics.color_rgb(250, 217, 219))
+        rec1.setOutline("ivory")
+        rec1.draw(win)
+        
+        predicted_shape, predicted_color = choose_shape(150,140,win)
+
+        score = 0
+        score_text, label_text = draw_score(score,win)
+        draw_next_shape(win)
+        
+        delay = 0.2
+        grid = []
+        center = []
+        shape = draw_shape(predicted_shape) 
+        color = predicted_color
+        predicted_shape, predicted_color = choose_shape(150,140,win)
+        '''The main game loop check if the shape can move down or not.
+        If the shape can move down, the user can use the keys to move the shape to the left, right, down or rotate the shape and the shape will move down.
+        If the shape can't move down, check if game over, then check for full rows, update the score, draw a new shape, and wait the delay amount of time'''
+        while True:  
+            if can_move_down(shape,center):
+                for i in shape:
+                    i.move(0,-30)
+                keystrings = win.checkKey()
+                if keystrings == "Left":
+                    move_left(shape,center)
+                elif keystrings == "Right":
+                    move_right(shape,center)
+                elif keystrings == "Down":
+                    move_down(shape,center)
+                elif keystrings == "Up":
+                    # move the shape to the bottom
+                    while can_move_down(shape,center):
+                        move_down(shape,center)
+                elif keystrings == "space":
                     for i in shape:
-                        i.move(0,-30)
+                        i.undraw()
+                    shape, color = rotate(shape,color)
+                    for i in shape:
+                        i.setFill(color)
+                        i.setOutline("ivory")
+                        i.draw(win)
+            else:
+                time.sleep(0.2)
+                while True:
                     keystrings = win.checkKey()
                     if keystrings == "Left":
                         move_left(shape,center)
                     elif keystrings == "Right":
                         move_right(shape,center)
-                    elif keystrings == "Down":
-                        move_down(shape,center) 
                     elif keystrings == "space":
                         for i in shape:
                             i.undraw()
@@ -442,17 +498,19 @@ def main():
                             i.setFill(color)
                             i.setOutline("ivory")
                             i.draw(win)
-                else:
-                    if check_full_screen(shape):
+                    else:
                         break
-                    freeze_shape(shape,grid,win)
-                    full_rows = check_full_rows(grid)
-                    score_text, score, label_text = update_score(score_text, score, full_rows,label_text,win)
-                    center = get_center(grid)
-                    shape = draw_shape(predicted_shape) 
-                    color = predicted_color
-                    predicted_shape, predicted_color = choose_shape(150,140,win)
-                time.sleep(delay)
+                    time.sleep(0.5)
+                if check_full_screen(shape):
+                    break
+                freeze_shape(shape,grid,win)
+                full_rows = check_full_rows(grid)
+                score_text, score, label_text = update_score(score_text, score, full_rows,label_text,win)
+                center = get_center(grid)
+                shape = draw_shape(predicted_shape) 
+                color = predicted_color
+                predicted_shape, predicted_color = choose_shape(150,140,win)
+            time.sleep(delay)
         
         '''If game over, the main game loop break and start drawing the leaderboard screen'''
         scores.append(score)
